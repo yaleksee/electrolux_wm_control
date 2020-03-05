@@ -1,4 +1,4 @@
-package com.electrolux.model;
+package com.electrolux.entity;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,10 +11,10 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "model")
+@Table(name = "washing_machine_model")
 @Data
 @NoArgsConstructor
-public class Model {
+public class WashingMachineModel {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
@@ -30,7 +30,7 @@ public class Model {
     private Boolean isDisplay;
 
 
-    public Model(String modelName, Integer mainsVoltage, Integer hardnessWater, String collor, Boolean isDisplay) {
+    public WashingMachineModel(String modelName, Integer mainsVoltage, Integer hardnessWater, String collor, Boolean isDisplay) {
         this.modelName = modelName;
         this.mainsVoltage = mainsVoltage;
         this.hardnessWater = hardnessWater;

@@ -20,6 +20,7 @@ public class AppConfig {
 
     private final Environment environment;
 
+    //создается первичная модель в БД если ее еще нет
     @PostConstruct
     public void execute() throws NoSuchProviderException, NoSuchAlgorithmException, IOException {
         String modelName = this.environment.getProperty("modelName");
