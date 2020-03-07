@@ -15,7 +15,7 @@ import java.util.Set;
 @Table(name = "user")
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
+//@AllArgsConstructor
 public class User {
 
     @Id
@@ -27,13 +27,9 @@ public class User {
     @Column(unique = true, nullable = false, name = "login")
     private String login;
 
-    @NotNull
-    @Size(min = 2, max = 20, message = "...")
     @Column(name = "first_name")
     private String firstName;
 
-    @NotNull
-    @Size(min = 2, max = 20, message = "...")
     @Column(name = "last_name")
     private String lastName;
 }

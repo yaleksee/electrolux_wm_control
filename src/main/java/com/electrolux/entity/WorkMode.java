@@ -18,7 +18,7 @@ import java.util.Set;
 @Table(name = "work_mode")
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
+//@AllArgsConstructor
 public class WorkMode extends AuditEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,6 +49,6 @@ public class WorkMode extends AuditEntity{
     @JsonIgnore
     private User user;
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "workModes")
-    private Set<WM_Model> wm_models;
+//    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "workModes")
+//    private Set<WM_Model> wm_models;
 }
