@@ -13,7 +13,7 @@ import java.util.Optional;
 
 @Repository
 public interface WorkModeRepository extends JpaRepository<WorkMode, Long>{
-    Page<WorkMode> findByUserId(Long postId, Pageable pageable);
+    List<WorkMode> findByUserId(Long userId);
     Optional<WorkMode> findByIdAndUserId(Long id, Long userId);
     WorkMode findByNameMode(String nameMode) throws ResourceNotFoundException;
 }

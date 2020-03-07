@@ -1,6 +1,8 @@
 package com.electrolux.services;
 
+import com.electrolux.entity.User;
 import com.electrolux.entity.WorkMode;
+import com.electrolux.exception.ResourceAccessException;
 import com.electrolux.exception.ResourceNotFoundException;
 import com.electrolux.repository.UserRepository;
 import com.electrolux.repository.WorkModeRepository;
@@ -21,20 +23,30 @@ public class WorkModelService {
 
     // создать режим и привязать его к user
     public WorkMode createWorkMode(Long userId, WorkMode newMode) {
-        return userRepository.findById(userId).map(user -> {
-            newMode.setUser(user);
-            return workModeRepository.save(newMode);
-        }).orElseThrow(() -> new ResourceNotFoundException("User with id " + userId + " not found"));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("user not found for this id : " + userId));
+        WorkMode workMode = workModeRepository.findByNameMode(newMode.getNameMode());
+        if (workMode != null) {
+            throw new ResourceAccessException("Mode with name " + newMode.getNameMode() + " already exist");
+        }
+        newMode.setUser(user);
+        return workModeRepository.save(newMode);
     }
 
-    // редактировать режим
-    public WorkMode updateWorkMode(Long modeId, WorkMode externalMode) throws ResourceNotFoundException {
-        final WorkMode internalMode = findById(modeId);
-        internalMode.setNameMode(externalMode.getNameMode());
-        internalMode.setSaveWater(externalMode.getSaveWater());
-        internalMode.setSpidSpeed(externalMode.getSpidSpeed());
-        internalMode.setWashingTemperature(externalMode.getWashingTemperature());
-        return workModeRepository.save(internalMode);
+    // редактировать режим может только user который этот режим создал
+    public WorkMode updateWorkMode(Long userId, Long modeId, WorkMode externalMode) throws ResourceNotFoundException {
+        userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("user not found for this id : " + userId));
+        WorkMode internalWorkMode = findById(modeId);
+        if (findByUserId(userId).contains(internalWorkMode)) {
+            final WorkMode internalMode = findById(modeId);
+            internalMode.setNameMode(externalMode.getNameMode());
+            internalMode.setSaveWater(externalMode.getSaveWater());
+            internalMode.setSpidSpeed(externalMode.getSpidSpeed());
+            internalMode.setWashingTemperature(externalMode.getWashingTemperature());
+            return workModeRepository.save(internalMode);
+        }
+        throw new ResourceNotFoundException("User with id : " + userId + " don't author of this mode");
     }
 
     // выбрать режим по id
@@ -45,9 +57,9 @@ public class WorkModelService {
     }
 
     // выбрать режим по nameMode
-    public WorkMode findById(String nameMode) throws ResourceNotFoundException {
+    public WorkMode findByNameMode(String nameMode) throws ResourceNotFoundException {
         WorkMode workMode = workModeRepository.findByNameMode(nameMode);
-        if (workMode == null) new ResourceNotFoundException("workMode not found for this name : " + nameMode);
+        if (workMode == null) throw new ResourceNotFoundException("workMode not found for this name : " + nameMode);
         return workMode;
     }
 
@@ -57,17 +69,25 @@ public class WorkModelService {
     }
 
     // выбрать все существующие режимы у данного пользователя
-    public Page<WorkMode> findByUserId(Long userId, Pageable pageable) {
-        return workModeRepository.findByUserId(userId, pageable);
+    public List<WorkMode> findByUserId(Long userId) {
+        List<WorkMode> workModes = workModeRepository.findByUserId(userId);
+        if (workModes == null) throw new ResourceNotFoundException("workModes not found for user with id: " + userId);
+        return workModes;
     }
 
-    // выбрать стиральные машины в которые установлен режим по его nameMode
+    // выбрать режим который установлен в стиральную машину по id стиральной машины
 
-
-    // удалить режим
+    // удалить режим может только юзер который его создал
     public void deleteWorkMode(Long userId, Long modeId) throws ResourceNotFoundException {
-        if (workModeRepository.findByIdAndUserId(modeId, userId) != null)
+        userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("user not found for this id : " + userId));
+        WorkMode internalWorkMode = findById(modeId);
+        if (findByUserId(userId).contains(internalWorkMode)) {
             workModeRepository.deleteById(modeId);
+        } else {
+            throw new ResourceAccessException("User with id " + userId + " cannot delete mode with id " + modeId);
+        }
+
     }
 
 }

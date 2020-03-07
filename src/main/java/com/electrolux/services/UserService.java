@@ -39,9 +39,8 @@ public class UserService {
 
     // выбрать пользователя по id
     public User findById(long userId) throws ResourceNotFoundException {
-        User user = userRepository.findById(userId)
+        return userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("user not found for this id : " + userId));
-        return user;
     }
 
     // выбрать пользователя по login
@@ -60,8 +59,9 @@ public class UserService {
 
     // удалить пользователя
     public void deleteUser(Long userId) throws ResourceNotFoundException {
-        if (userRepository.findById(userId) != null)
-            userRepository.deleteById(userId);
+        userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("user not found for this id : " + userId));
+        userRepository.deleteById(userId);
     }
 
 }
