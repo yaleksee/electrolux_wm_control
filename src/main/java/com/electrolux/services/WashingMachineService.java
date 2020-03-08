@@ -1,7 +1,7 @@
 package com.electrolux.services;
 
 import com.electrolux.entity.User;
-import com.electrolux.entity.WM_Model;
+import com.electrolux.entity.Model;
 import com.electrolux.entity.WorkMode;
 import com.electrolux.exception.ResourceAccessException;
 import com.electrolux.exception.ResourceNotFoundException;
@@ -29,10 +29,10 @@ public class WashingMachineService {
 
     // создать см и привязать ее к user
     // подгрузить в нее режим стрирки по умолчанию
-    public WM_Model createModel(long userId, WM_Model newModel) {
+    public Model createModel(long userId, Model newModel) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("user not found for this id : " + userId));
-        WM_Model model = wm_repository.findByModelName(newModel.getModelName());
+        Model model = wm_repository.findByModelName(newModel.getModelName());
         if (model != null) {
             throw new ResourceAccessException("Model with name " + newModel.getModelName() + " already exist");
         }
@@ -43,17 +43,20 @@ public class WashingMachineService {
     // редактировать см может только user, который этой машиной владеет. 
     // Сменить владельца не возможно.
     // Сменить срок гарантии невозможно.
-    public WM_Model updateModel(long userId, long modelId, WM_Model externalModel) throws ResourceNotFoundException {
+    // Сменить число стирок не возможно.
+    public Model updateModel(long userId, long modelId, Model externalModel) throws ResourceNotFoundException {
         userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("user not found for this id : " + userId));
         String modelName = externalModel.getModelName();
-        WM_Model model = wm_repository.findByModelName(modelName);
+        Model model = wm_repository.findByModelName(modelName);
         if (model != null)
             throw new ResourceAccessException("model with name " + modelName + " already exists");
-        WM_Model internalModel = findById(modelId);
+        Model internalModel = findById(modelId);
+        if(!internalModel.getModelName().equals(externalModel.getModelName())){
+            throw new ResourceAccessException("Change model name impossible");
+        }
         if (findByUserId(userId).contains(internalModel)) {
-            final WM_Model internalMode = findById(modelId);
-            internalMode.setModelName(externalModel.getModelName());
+            final Model internalMode = findById(modelId);
             internalMode.setMainsVoltage(externalModel.getMainsVoltage());
             internalMode.setHardnessWater(externalModel.getHardnessWater());
             internalMode.setVolume(externalModel.getVolume());
@@ -65,44 +68,43 @@ public class WashingMachineService {
     }
 
     // выбрать см по id
-    public WM_Model findById(long modelId) throws ResourceNotFoundException {
-        WM_Model model = wm_repository.findById(modelId)
+    public Model findById(long modelId) throws ResourceNotFoundException {
+        return wm_repository.findById(modelId)
                 .orElseThrow(() -> new ResourceNotFoundException("Model not found for this id : " + modelId));
-        return model;
     }
 
     // выбрать см по modelName
-    public WM_Model findByNameModel(String modelName) throws ResourceNotFoundException {
-        WM_Model model = wm_repository.findByModelName(modelName);
+    public Model findByNameModel(String modelName) throws ResourceNotFoundException {
+        Model model = wm_repository.findByModelName(modelName);
         if (model == null) throw new ResourceNotFoundException("model not found for this name : " + modelName);
         return model;
     }
 
     // выбрать все существующие см
-    public List<WM_Model> getAllWM_Models() {
+    public List<Model> getAllWM_Models() {
         return wm_repository.findAll();
     }
 
     // выбрать все существующие см у данного пользователя
     @Transactional
-    public Set<WM_Model> findByUserId(long userId) {
+    public Set<Model> findByUserId(long userId) {
         userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("user not found for this id : " + userId));
-        Set<WM_Model> models = wm_repository.findByUserId(userId);
+        Set<Model> models = wm_repository.findByUserId(userId);
         if (models == null) throw new ResourceNotFoundException("models not found for user with id: " + userId);
         return models;
     }
 
     // выбрать режимы которые установлены в стиральную машину по id стиральной машины
     public Set<WorkMode> getAllModesFromWM(long wmId) {
-        WM_Model model = findById(wmId);
+        Model model = findById(wmId);
         return model.getWorkModes();
     }
 
     // пользователь загружает в текущую модель режимы стрирки по id режимов
     // пользователь не имеет доступ к режимам которые ему не пренадлежат
     public Status putSomeModeIntoWM(long userId, long wmId, List<Long> arrModeId) {
-        WM_Model model = findById(wmId);
+        Model model = findById(wmId);
         userRepository.findById(userId);
         if (model.getUser().getId() != userId)
             throw new ResourceAccessException("User with id " + userId + " cannot put modes, because it isn't his wm");
@@ -123,7 +125,7 @@ public class WashingMachineService {
 
     // пользователь загружает в текущую модель все свои режимы стрирки
     public Status putAllModeIntoWM(long userId, long wmId) {
-        WM_Model model = findById(wmId);
+        Model model = findById(wmId);
         userRepository.findById(userId);
         if (model.getUser().getId() != userId)
             throw new ResourceAccessException("User with id " + userId + " cannot put modes, because it isn't his wm");
@@ -136,7 +138,7 @@ public class WashingMachineService {
 
     // пользователь удаляет режимы стирки по их id кроме режима по умолчанию "default"
     public Status deleteSomeModeIntoWM(long userId, long wmId, List<Long> arrModeId) {
-        WM_Model model = findById(wmId);
+        Model model = findById(wmId);
         userRepository.findById(userId);
         if (model.getUser().getId() != userId)
             throw new ResourceAccessException("User with id " + userId + " cannot delete modes, because it isn't his wm");
@@ -155,7 +157,7 @@ public class WashingMachineService {
 
     // пользователь удаляет все режимы стирки кроме режима по умолчанию "default"
     public Status deleteAllModeIntoWM(long userId, long wmId) {
-        WM_Model model = findById(wmId);
+        Model model = findById(wmId);
         userRepository.findById(userId);
         if (model.getUser().getId() != userId)
             throw new ResourceAccessException("User with id " + userId + " cannot delete modes, because it isn't his wm");
@@ -171,7 +173,7 @@ public class WashingMachineService {
     public void deleteWMModel(Long userId, Long modelId) throws ResourceNotFoundException {
         userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("user not found for this id : " + userId));
-        WM_Model internalModel = findById(modelId);
+        Model internalModel = findById(modelId);
         if (findByUserId(userId).contains(internalModel)) {
             workModeRepository.deleteById(modelId);
         } else {

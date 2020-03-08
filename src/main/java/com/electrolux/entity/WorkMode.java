@@ -19,10 +19,11 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-//@AllArgsConstructor
+@ToString
 public class WorkMode{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @ToString.Exclude
     private long id;
 
     @NotNull
@@ -40,6 +41,11 @@ public class WorkMode{
     @Column(name = "washing_temperature")
     private Integer washingTemperature;
 
+    @NotNull
+    @Min(30) @Max(180)
+    @Column(name = "washing_timer")
+    private Integer washingTimer;
+
     @NotNull(message = "...")
     @Column(name = "save_water")
     private String saveWater;
@@ -48,11 +54,13 @@ public class WorkMode{
     @JoinColumn(name = "user_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
+    @ToString.Exclude
     private User user;
 
 //    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "workModes")
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "workModes", cascade = CascadeType.ALL)
     @Fetch(value=FetchMode.SELECT)
     @JsonIgnore
-    private Set<WM_Model> wm_models;
+    @ToString.Exclude
+    private Set<Model> models;
 }

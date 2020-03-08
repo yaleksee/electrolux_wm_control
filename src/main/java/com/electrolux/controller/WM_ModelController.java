@@ -1,6 +1,6 @@
 package com.electrolux.controller;
 
-import com.electrolux.entity.WM_Model;
+import com.electrolux.entity.Model;
 import com.electrolux.entity.WorkMode;
 import com.electrolux.exception.ResourceNotFoundException;
 import com.electrolux.services.WashingMachineService;
@@ -24,27 +24,27 @@ public class WM_ModelController {
 
     // выбрать все существующие см
     @GetMapping
-    public List<WM_Model> getAllModels() {
+    public List<Model> getAllModels() {
         return washingMachineService.getAllWM_Models();
     }
 
     // выбрать см по id
     @GetMapping("/{id}")
-    public ResponseEntity<WM_Model> getModelById(@PathVariable(value = "id") Long modelId) throws ResourceNotFoundException {
-        WM_Model model = washingMachineService.findById(modelId);
+    public ResponseEntity<Model> getModelById(@PathVariable(value = "id") Long modelId) throws ResourceNotFoundException {
+        Model model = washingMachineService.findById(modelId);
         return ResponseEntity.ok().body(model);
     }
 
     // выбрать см по nameModel
     @GetMapping("/search/{nameModel}")
-    public ResponseEntity<WM_Model> getModelByNameMode(@PathVariable(value = "nameModel") String nameModel) throws ResourceNotFoundException {
-        WM_Model model = washingMachineService.findByNameModel(nameModel);
+    public ResponseEntity<Model> getModelByNameMode(@PathVariable(value = "nameModel") String nameModel) throws ResourceNotFoundException {
+        Model model = washingMachineService.findByNameModel(nameModel);
         return ResponseEntity.ok().body(model);
     }
 
     // выбрать все существующие см у данного пользователя
     @GetMapping("/for_user/{id}")
-    public Set<WM_Model> getAllModelsByUserId(@PathVariable(value = "id") Long userId) throws ResourceNotFoundException {
+    public Set<Model> getAllModelsByUserId(@PathVariable(value = "id") Long userId) throws ResourceNotFoundException {
         return washingMachineService.findByUserId(userId);
     }
 
@@ -56,7 +56,7 @@ public class WM_ModelController {
 
     // создать см и привязать ее к user
     @PostMapping("/{userId}")
-    public WM_Model createModel(@PathVariable Long userId, @Valid @RequestBody WM_Model newModel) {
+    public Model createModel(@PathVariable Long userId, @Valid @RequestBody Model newModel) {
         return washingMachineService.createModel(userId, newModel);
     }
 
@@ -64,12 +64,12 @@ public class WM_ModelController {
     // Сменить владельца не возможно.
     // Сменить срок гарантии невозможно.
     @PutMapping("/{userId}/model/{modelId}")
-    public ResponseEntity<WM_Model> updateModel(
+    public ResponseEntity<Model> updateModel(
             @PathVariable(value = "userId") Long userId,
             @PathVariable(value = "modelId") Long modelId,
-            @Valid @RequestBody WM_Model model
+            @Valid @RequestBody Model model
     ) throws ResourceNotFoundException {
-        WM_Model updateModel = washingMachineService.updateModel(userId, modelId, model);
+        Model updateModel = washingMachineService.updateModel(userId, modelId, model);
         return ResponseEntity.ok(updateModel);
     }
 

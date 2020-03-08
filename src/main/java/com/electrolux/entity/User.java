@@ -14,11 +14,12 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-//@AllArgsConstructor
+@ToString
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @ToString.Exclude
     private Long id;
 
     @NotNull
@@ -27,8 +28,10 @@ public class User {
     private String login;
 
     @Column(name = "first_name")
+    @ToString.Exclude
     private String firstName;
 
     @Column(name = "last_name")
+    @ToString.Exclude
     private String lastName;
 }

@@ -23,10 +23,11 @@ public class AppConfig {
     private final Environment environment;
 
     // создается первичная модель стрильное машины в БД если ее еще нет
+    // сохдается первый юзер
     // и создается первый рабочий режим
     // потом они присваиваются друг другу
     @PostConstruct
-    public void execute() throws NoSuchProviderException, NoSuchAlgorithmException, IOException {
+    public void execute() {
         String modelName = this.environment.getProperty("modelName");
 
     }

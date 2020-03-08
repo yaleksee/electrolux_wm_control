@@ -17,14 +17,15 @@ import java.util.Date;
 import java.util.Set;
 
 @Entity
-@Table(name = "wm_model")
+@Table(name = "model")
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-public class WM_Model extends AuditEntity{
+@ToString
+public class Model {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @ToString.Exclude
     private long id;
 
     @NotNull
@@ -47,6 +48,11 @@ public class WM_Model extends AuditEntity{
     @Column
     private Integer volume;
 
+    @NotNull
+    @Min(0) @Max(0)
+    @Column (name = "washing_number")
+    private Integer washingNumber;
+
     @Column(name = "hexcode_collor")
     private String hexCodeCollor;
 
@@ -62,14 +68,16 @@ public class WM_Model extends AuditEntity{
     @JoinColumn(name = "user_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
+    @ToString.Exclude
     private User user;
 
     @ManyToMany
     @JoinTable(name = "wm_modes",
-            joinColumns = @JoinColumn(name = "wm_model_id", referencedColumnName = "id"),
+            joinColumns = @JoinColumn(name = "model_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "work_mode_id", referencedColumnName = "id")
     )
     @JsonIgnore
+    @ToString.Exclude
     private Set<WorkMode> workModes;
 
 }
