@@ -1,6 +1,7 @@
 package com.electrolux.services;
 
 import com.electrolux.entity.User;
+import com.electrolux.entity.WM_Model;
 import com.electrolux.entity.WorkMode;
 import com.electrolux.exception.ResourceAccessException;
 import com.electrolux.exception.ResourceNotFoundException;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -37,6 +39,10 @@ public class WorkModelService {
     public WorkMode updateWorkMode(Long userId, Long modeId, WorkMode externalMode) throws ResourceNotFoundException {
         userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("user not found for this id : " + userId));
+        String modeName = externalMode.getNameMode();
+        WorkMode mode = workModeRepository.findByNameMode(modeName);
+        if (mode != null)
+            throw new ResourceAccessException("mode with name + " + modeName + " already exists");
         WorkMode internalWorkMode = findById(modeId);
         if (findByUserId(userId).contains(internalWorkMode)) {
             final WorkMode internalMode = findById(modeId);
@@ -69,13 +75,11 @@ public class WorkModelService {
     }
 
     // выбрать все существующие режимы у данного пользователя
-    public List<WorkMode> findByUserId(Long userId) {
-        List<WorkMode> workModes = workModeRepository.findByUserId(userId);
+    public Set<WorkMode> findByUserId(Long userId) {
+        Set<WorkMode> workModes = workModeRepository.findByUserId(userId);
         if (workModes == null) throw new ResourceNotFoundException("workModes not found for user with id: " + userId);
         return workModes;
     }
-
-    // выбрать режим который установлен в стиральную машину по id стиральной машины
 
     // удалить режим может только юзер который его создал
     public void deleteWorkMode(Long userId, Long modeId) throws ResourceNotFoundException {
@@ -87,7 +91,6 @@ public class WorkModelService {
         } else {
             throw new ResourceAccessException("User with id " + userId + " cannot delete mode with id " + modeId);
         }
-
     }
 
 }

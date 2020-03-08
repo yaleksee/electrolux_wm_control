@@ -10,10 +10,10 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public interface WorkModeRepository extends JpaRepository<WorkMode, Long>{
-    List<WorkMode> findByUserId(Long userId);
-    Optional<WorkMode> findByIdAndUserId(Long id, Long userId);
-    WorkMode findByNameMode(String nameMode) throws ResourceNotFoundException;
+    Set<WorkMode> findByUserId(Long userId);
+    WorkMode findByNameMode(String nameMode);
 }

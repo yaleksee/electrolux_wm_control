@@ -1,8 +1,6 @@
 package com.electrolux.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -13,7 +11,8 @@ import java.util.Set;
 
 @Entity
 @Table(name = "user")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 //@AllArgsConstructor
 public class User {
@@ -23,7 +22,7 @@ public class User {
     private Long id;
 
     @NotNull
-    @Size(min = 2, max = 20, message = "...")
+    @Size(min = 2, max = 20, message = "long of login incorrect")
     @Column(unique = true, nullable = false, name = "login")
     private String login;
 

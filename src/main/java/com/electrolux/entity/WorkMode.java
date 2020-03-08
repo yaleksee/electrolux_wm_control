@@ -1,15 +1,13 @@
 package com.electrolux.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
+import lombok.*;
+import org.hibernate.annotations.*;
 
 import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -18,10 +16,11 @@ import java.util.Set;
 
 @Entity
 @Table(name = "work_mode")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 //@AllArgsConstructor
-public class WorkMode extends AuditEntity{
+public class WorkMode{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -52,5 +51,8 @@ public class WorkMode extends AuditEntity{
     private User user;
 
 //    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "workModes")
-//    private Set<WM_Model> wm_models;
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "workModes", cascade = CascadeType.ALL)
+    @Fetch(value=FetchMode.SELECT)
+    @JsonIgnore
+    private Set<WM_Model> wm_models;
 }

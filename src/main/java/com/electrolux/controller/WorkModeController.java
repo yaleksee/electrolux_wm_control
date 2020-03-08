@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/mode")
@@ -40,7 +41,7 @@ public class WorkModeController {
 
     // выбрать все существующие режимы у данного пользователя
     @GetMapping("/for_user/{id}")
-    public List<WorkMode> getAllModesByUserId(@PathVariable(value = "id") Long userId) throws ResourceNotFoundException {
+    public Set<WorkMode> getAllModesByUserId(@PathVariable(value = "id") Long userId) throws ResourceNotFoundException {
         return modeService.findByUserId(userId);
     }
     
@@ -52,7 +53,11 @@ public class WorkModeController {
 
     // редактировать режим может только user который этот режим создал
     @PutMapping("/{userId}/mode/{modeId}")
-    public ResponseEntity<WorkMode> updateUser(@PathVariable(value = "userId") Long userId, @PathVariable(value = "modeId") Long modeId, @Valid @RequestBody WorkMode mode) throws ResourceNotFoundException {
+    public ResponseEntity<WorkMode> updateMode(
+            @PathVariable(value = "userId") Long userId,
+            @PathVariable(value = "modeId") Long modeId,
+            @Valid @RequestBody WorkMode mode
+    ) throws ResourceNotFoundException {
         WorkMode workMode = modeService.updateWorkMode(userId, modeId, mode);
         return ResponseEntity.ok(workMode);
     }
