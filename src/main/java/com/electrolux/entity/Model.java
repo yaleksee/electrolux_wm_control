@@ -29,7 +29,7 @@ public class Model {
     private long id;
 
     @NotNull
-    @Size(min = 2, max = 20)
+    @Size(min = 2, max = 40, message = "modelName limits must be kept")
     @Column(name = "model_name")
     private String modelName;
 

@@ -21,7 +21,7 @@ public class EntryController {
     // выбрать все существующие записи
     @GetMapping
     public List<Entry> getAllLogs() {
-        return entryService.getAllLogs();
+        return entryService.getAllEntries();
     }
 
     // выбрать запись по id
@@ -47,7 +47,6 @@ public class EntryController {
     }
 
     // выбрать все записи по времени создания
-    // выбрать все записи по временному интервалу
     @GetMapping("/getAll/{createdDate}")
     public Set<Entry> getAllByCreateTame(
             @PathVariable(value = "createdDate") String createdDate) throws ResourceNotFoundException {

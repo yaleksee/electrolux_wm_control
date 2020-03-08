@@ -18,7 +18,7 @@ import java.util.Set;
 @RestController
 @RequestMapping("/api/model")
 @RequiredArgsConstructor
-public class WM_ModelController {
+public class ModelController {
     private final WorkModelService modeService;
     private final WashingMachineService washingMachineService;
 

@@ -27,7 +27,7 @@ public class WorkMode{
     private long id;
 
     @NotNull
-    @Size(min = 2, max = 20, message = "...")
+    @Size(min = 2, max = 20, message = "nameMode limits must be kept")
     @Column(name = "name_mode")
     private String nameMode;
 
