@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -54,19 +55,10 @@ public class WashingMachineServiceImpl implements WashingMachineService {
     public Model updateModel(long userId, long modelId, Model externalModel) throws ResourceNotFoundException {
         userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("user not found for this id : " + userId));
-        final String modelName = externalModel.getModelName();
-        final Model model = model_repository.findByModelName(modelName);
-        if (model != null) {
-            LOG.error("model with name " + modelName + " already exists");
-            throw new ResourceAccessException("model with name " + modelName + " already exists");
-        }
         final Model internalModel = findById(modelId);
-        if (!internalModel.getModelName().equals(externalModel.getModelName())
-                || internalModel.getWarrantyExpirationDate() != externalModel.getWarrantyExpirationDate()
-                || !internalModel.getWashingNumber().equals(externalModel.getWashingNumber())
-        ) {
-            LOG.error("Change model name, warranty period and number of washing are not possible");
-            throw new ResourceAccessException("Change model name, warranty period and number of washing are not possible");
+        if (internalModel.getWarrantyExpirationDate() != externalModel.getWarrantyExpirationDate()) {
+            LOG.error("Change warranty period are not possible");
+            throw new ResourceAccessException("Change warranty period are not possible");
         }
         if (findByUserId(userId).contains(internalModel)) {
             Model internalMode = findById(modelId);
@@ -142,7 +134,9 @@ public class WashingMachineServiceImpl implements WashingMachineService {
 
         model.setWorkModes(modes);
         model_repository.save(model);
-        return new Status("Putting success", HttpStatus.OK);
+        List<String> list = new ArrayList<>();
+        list.add("Putting success!");
+        return new Status(list, HttpStatus.OK);
     }
 
     @Override
@@ -158,7 +152,9 @@ public class WashingMachineServiceImpl implements WashingMachineService {
 
         model.setWorkModes(workModes);
         model_repository.save(model);
-        return new Status("Putting success", HttpStatus.OK);
+        List<String> list = new ArrayList<>();
+        list.add("Putting success!");
+        return new Status(list, HttpStatus.OK);
     }
 
     @Override
@@ -180,7 +176,9 @@ public class WashingMachineServiceImpl implements WashingMachineService {
         }
         model.setWorkModes(modes);
         model_repository.save(model);
-        return new Status("Deleting success", HttpStatus.OK);
+        List<String> list = new ArrayList<>();
+        list.add("Deleting success!");
+        return new Status(list, HttpStatus.OK);
     }
 
     @Override
@@ -197,7 +195,9 @@ public class WashingMachineServiceImpl implements WashingMachineService {
                 .collect(Collectors.toSet());
         model.setWorkModes(removedSet);
         model_repository.save(model);
-        return new Status("Deleting success", HttpStatus.OK);
+        List<String> list = new ArrayList<>();
+        list.add("Deleting success!");
+        return new Status(list, HttpStatus.OK);
     }
 
     @Override

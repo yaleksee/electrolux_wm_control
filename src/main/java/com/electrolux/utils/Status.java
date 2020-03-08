@@ -6,11 +6,12 @@ import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Status implements Serializable {
-    public String status;
+    public List<String> status;
     public HttpStatus httpStatus;
 }

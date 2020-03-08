@@ -49,7 +49,7 @@ public class Model {
     private Integer volume;
 
     @NotNull
-    @Min(0) @Max(0)
+    @Min(0) @Max(10000)
     @Column (name = "washing_number")
     private Integer washingNumber;
 

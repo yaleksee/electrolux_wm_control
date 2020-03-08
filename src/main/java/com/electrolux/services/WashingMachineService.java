@@ -34,9 +34,7 @@ public interface WashingMachineService {
 
     /**
      * Only the user who owns this machine can edit WM.
-     * Change of nameModel is not possible.
      * Change the warranty period is not possible.
-     * Change the number of washings is not possible.
      *
      * @param userId        - id user
      * @param modelId       - id model

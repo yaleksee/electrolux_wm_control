@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -103,7 +104,10 @@ public class EntryServiceImpl implements EntryService {
             LOG.error("workMode with id: " + modeId + " not found in the washing machine with id: " + wmId);
             throw new ResourceNotFoundException("workMode with id: " + modeId + " not found in the washing machine with id: " + wmId);
         }
-        return new Status(entry.getLog(), HttpStatus.OK);
+        List<String> list = new ArrayList<>();
+        list.add(entry.getLog());
+        list.add("The entry was successfully save!");
+        return new Status(list, HttpStatus.OK);
     }
 
 }
