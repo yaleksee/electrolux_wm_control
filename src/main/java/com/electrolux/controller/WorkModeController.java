@@ -5,6 +5,8 @@ import com.electrolux.entity.WorkMode;
 import com.electrolux.exception.ResourceNotFoundException;
 import com.electrolux.services.UserService;
 import com.electrolux.services.WorkModelService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,44 +17,45 @@ import java.util.Set;
 
 @RestController
 @RequestMapping("/api/mode")
+@Api(value = "REST provides function for work with working mode for washing machine")
 @RequiredArgsConstructor
 public class WorkModeController {
     private final WorkModelService modeService;
 
-    // выбрать все существующие режимы
     @GetMapping
+    @ApiOperation("get all modes")
     public List<WorkMode> getAllModes() {
         return modeService.getAllWorkModes();
     }
 
-    // выбрать режим по id
     @GetMapping("/{id}")
+    @ApiOperation("get mode by id")
     public ResponseEntity<WorkMode> getModeById(@PathVariable(value = "id") Long modeId) throws ResourceNotFoundException {
         WorkMode workMode = modeService.findById(modeId);
         return ResponseEntity.ok().body(workMode);
     }
 
-    // выбрать режим по nameMode
     @GetMapping("/search/{nameMode}")
+    @ApiOperation("get mode by name")
     public ResponseEntity<WorkMode> getModeByNameMode(@PathVariable(value = "nameMode") String nameMode) throws ResourceNotFoundException {
         WorkMode workMode = modeService.findByNameMode(nameMode);
         return ResponseEntity.ok().body(workMode);
     }
 
-    // выбрать все существующие режимы у данного пользователя
     @GetMapping("/for_user/{id}")
+    @ApiOperation("get all modes from user by id")
     public Set<WorkMode> getAllModesByUserId(@PathVariable(value = "id") Long userId) throws ResourceNotFoundException {
         return modeService.findByUserId(userId);
     }
     
-    // создать режим и привязать его к user
     @PostMapping("/{userId}")
+    @ApiOperation("create mode")
     public WorkMode createMode(@PathVariable Long userId, @Valid @RequestBody WorkMode newMode) {
         return modeService.createWorkMode(userId, newMode);
     }
 
-    // редактировать режим может только user который этот режим создал
     @PutMapping("/{userId}/mode/{modeId}")
+    @ApiOperation("update modes")
     public ResponseEntity<WorkMode> updateMode(
             @PathVariable(value = "userId") Long userId,
             @PathVariable(value = "modeId") Long modeId,
@@ -62,8 +65,8 @@ public class WorkModeController {
         return ResponseEntity.ok(workMode);
     }
 
-    // удалить режим может только юзер который его создал
     @DeleteMapping("/{userId}/mode/{modeId}")
+    @ApiOperation("delete modes")
     public ResponseEntity<Long> deleteMode(@PathVariable(value = "userId") Long userId, @PathVariable(value = "modeId") Long modeId) {
         modeService.deleteWorkMode(userId, modeId);
         return ResponseEntity.ok().body(modeId);

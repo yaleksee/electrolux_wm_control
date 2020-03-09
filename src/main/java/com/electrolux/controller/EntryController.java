@@ -4,6 +4,8 @@ import com.electrolux.entity.Entry;
 import com.electrolux.exception.ResourceNotFoundException;
 import com.electrolux.services.EntryService;
 import com.electrolux.utils.Status;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,31 +16,31 @@ import java.util.Set;
 
 @RestController
 @RequestMapping("/api/log")
+@Api(value = "REST provides function for work with entry for writing new status")
 @RequiredArgsConstructor
 public class EntryController {
     private final EntryService entryService;
 
-    // выбрать все существующие записи
     @GetMapping
     public List<Entry> getAllLogs() {
         return entryService.getAllEntries();
     }
 
-    // выбрать запись по id
     @GetMapping("/{id}")
+    @ApiOperation("get entry by id")
     public ResponseEntity<Entry> getLogById(@PathVariable(value = "id") Long logId) throws ResourceNotFoundException {
         Entry entry = entryService.findById(logId);
         return ResponseEntity.ok().body(entry);
     }
 
-    // выбрать все записи по id стриральной машины
     @GetMapping("/for_model/{id}")
-    public Set<Entry> getAllLogsByWMId(@PathVariable(value = "id") Long wmId) throws ResourceNotFoundException {
+    @ApiOperation("get entries in washing machine by id")
+    public Set<Entry> getAllEntriesByWMId(@PathVariable(value = "id") Long wmId) throws ResourceNotFoundException {
         return entryService.findByWMId(wmId);
     }
 
-    // выбрать все записи по временному интервалу
     @GetMapping("/{firstDate}/between/{lastDate}")
+    @ApiOperation("get entries in time period")
     public Set<Entry> getAllTimeBetween(
             @PathVariable(value = "firstDate") String firstDate,
             @PathVariable(value = "lastDate") String lastDate
@@ -46,16 +48,15 @@ public class EntryController {
         return entryService.findByDataBetween(firstDate, lastDate);
     }
 
-    // выбрать все записи по времени создания
     @GetMapping("/getAll/{createdDate}")
+    @ApiOperation("get entries on date create")
     public Set<Entry> getAllByCreateTame(
             @PathVariable(value = "createdDate") String createdDate) throws ResourceNotFoundException {
         return entryService.findAllByCreatedAt(createdDate);
     }
 
-    // добавить новую запись для данной см по id стриральной машины
-    // для этого создать новую запись и привязать ее к стиральной машине
     @PutMapping("/createFor/{wmId}/andMode/{modeId}")
+    @ApiOperation("add entry")
     public ResponseEntity<Status> addEntry(
             @PathVariable(value = "wmId") Long wmId,
             @PathVariable(value = "modeId") Long modeId
