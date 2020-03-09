@@ -5,22 +5,17 @@ import com.electrolux.entity.User;
 import com.electrolux.entity.WorkMode;
 import com.electrolux.services.UserService;
 import com.electrolux.services.WashingMachineService;
-import com.electrolux.services.WorkModelService;
+import com.electrolux.services.WorkModeService;
 import com.electrolux.utils.Converter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.annotation.PostConstruct;
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.util.Date;
 import java.util.Objects;
 
@@ -31,7 +26,7 @@ public class AppConfig {
 
     private final Environment environment;
     private final UserService userService;
-    private final WorkModelService workModelService;
+    private final WorkModeService workModeService;
     private final WashingMachineService washingMachineService;
 
     @PostConstruct
@@ -52,7 +47,7 @@ public class AppConfig {
         workMode.setSpidSpeed(spidSpeed);
         workMode.setWashingTimer(washingTimer);
         workMode.setSaveWater(saveWater);
-        workModelService.createWorkMode(user.getId(), workMode);
+        workModeService.createWorkMode(user.getId(), workMode);
 
         String modelName = this.environment.getProperty("modelName");
         Integer mainsVoltage = Integer.valueOf(Objects.requireNonNull(this.environment.getProperty("mainsVoltage")));

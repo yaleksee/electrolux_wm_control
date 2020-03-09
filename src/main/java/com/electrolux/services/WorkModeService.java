@@ -14,7 +14,7 @@ import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Set;
 
-public interface WorkModelService {
+public interface WorkModeService {
 
     /**
      * Create a mode and bind it to user
@@ -36,7 +36,7 @@ public interface WorkModelService {
     WorkMode updateWorkMode(@Nonnull Long userId, Long modeId, WorkMode externalMode);
 
 
-    WorkMode findById(@Nonnull long modeId);
+    WorkMode findById(@Nonnull Long modeId);
 
     WorkMode findByNameMode(@Nonnull String nameMode);
 

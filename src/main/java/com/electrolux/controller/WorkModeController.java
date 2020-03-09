@@ -1,10 +1,8 @@
 package com.electrolux.controller;
 
-import com.electrolux.entity.User;
 import com.electrolux.entity.WorkMode;
 import com.electrolux.exception.ResourceNotFoundException;
-import com.electrolux.services.UserService;
-import com.electrolux.services.WorkModelService;
+import com.electrolux.services.WorkModeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +18,7 @@ import java.util.Set;
 @Api(value = "REST provides function for work with working mode for washing machine")
 @RequiredArgsConstructor
 public class WorkModeController {
-    private final WorkModelService modeService;
+    private final WorkModeService modeService;
 
     @GetMapping
     @ApiOperation("get all modes")

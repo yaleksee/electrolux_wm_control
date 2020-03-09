@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 @Service
@@ -19,11 +20,10 @@ public class UserServiceImpl implements UserService {
     private static final Logger LOG = LoggerFactory.getLogger(UserServiceImpl.class);
 
     private final UserRepository userRepository;
-    private final WorkModeRepository workModeRepository;
 
     @Override
     @Transactional
-    public User createUser(User newUser) {
+    public User createUser(@Nonnull User newUser) {
         final User user = userRepository.findByLogin(newUser.getLogin());
         if (user != null) {
             LOG.error("user with login : " + newUser.getLogin() + " already exist");
@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public User updateUser(Long userId, User externalUser) throws ResourceNotFoundException {
+    public User updateUser(@Nonnull Long userId, User externalUser) throws ResourceNotFoundException {
         User internalUser = findById(userId);
         internalUser.setLogin(externalUser.getLogin());
         internalUser.setFirstName(externalUser.getFirstName());
@@ -43,13 +43,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findById(long userId) throws ResourceNotFoundException {
+    public User findById(@Nonnull Long userId) throws ResourceNotFoundException {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("user not found for this id : " + userId));
     }
 
     @Override
-    public User findByLogin(String login) throws ResourceNotFoundException {
+    public User findByLogin(@Nonnull String login) throws ResourceNotFoundException {
         final User user = userRepository.findByLogin(login);
         if (user == null) {
             LOG.error("user not found for this login : " + login);
@@ -65,7 +65,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void deleteUser(Long userId) throws ResourceNotFoundException {
+    public void deleteUser(@Nonnull Long userId) throws ResourceNotFoundException {
         userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("user not found for this id : " + userId));
         userRepository.deleteById(userId);

@@ -19,7 +19,7 @@ public interface UserService {
 
     User updateUser(@Nonnull Long userId, User externalUser);
 
-    User findById(@Nonnull long userId);
+    User findById(@Nonnull Long userId);
 
     User findByLogin(@Nonnull String login);
 

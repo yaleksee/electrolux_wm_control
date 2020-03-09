@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -38,13 +39,13 @@ public class EntryServiceImpl implements EntryService {
     }
 
     @Override
-    public Entry findById(long logId) throws ResourceNotFoundException {
+    public Entry findById(@Nonnull Long logId) throws ResourceNotFoundException {
         return entryRepository.findById(logId)
                 .orElseThrow(() -> new ResourceNotFoundException("Entry not found for this id : " + logId));
     }
 
     @Override
-    public Set<Entry> findByWMId(long wmId) {
+    public Set<Entry> findByWMId(@Nonnull Long wmId) {
         model_repository.findById(wmId)
                 .orElseThrow(() -> new ResourceNotFoundException("washing machine not found for this id : " + wmId));
         final Set<Entry> entries = entryRepository.findByModelId(wmId);
@@ -56,7 +57,7 @@ public class EntryServiceImpl implements EntryService {
     }
 
     @Override
-    public Set<Entry> findByDataBetween(String first, String last) {
+    public Set<Entry> findByDataBetween(@Nonnull String first, String last) {
         final Date firstDate = Converter.converter(first);
         final Date lastDate = Converter.converter(last);
         final Set<Entry> entries = entryRepository.findAllByCurrentlyDateBetween(firstDate, lastDate);
@@ -68,7 +69,7 @@ public class EntryServiceImpl implements EntryService {
     }
 
     @Override
-    public Set<Entry> findAllByCreatedAt(String create) {
+    public Set<Entry> findAllByCreatedAt(@Nonnull String create) {
         final Date createDate = Converter.converter(create);
         final Set<Entry> entries = entryRepository.findAllByCreatedAt(createDate);
         if (entries.size() == 0) {
@@ -80,7 +81,7 @@ public class EntryServiceImpl implements EntryService {
 
     @Override
     @Transactional
-    public Status addEntry(long wmId, long modeId) {
+    public Status addEntry(@Nonnull Long wmId, Long modeId) {
         final Model model = model_repository.findById(wmId)
                 .orElseThrow(() -> new ResourceNotFoundException("washing machine not found for this id : " + wmId));
         final WorkMode workMode = workModeRepository.findById(modeId)

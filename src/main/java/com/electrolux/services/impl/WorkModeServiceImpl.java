@@ -6,27 +6,28 @@ import com.electrolux.exception.ResourceAccessException;
 import com.electrolux.exception.ResourceNotFoundException;
 import com.electrolux.repository.UserRepository;
 import com.electrolux.repository.WorkModeRepository;
-import com.electrolux.services.WorkModelService;
+import com.electrolux.services.WorkModeService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
-public class WorkModelServiceImpl implements WorkModelService {
-    private static final Logger LOG = LoggerFactory.getLogger(WorkModelServiceImpl.class);
+public class WorkModeServiceImpl implements WorkModeService {
+    private static final Logger LOG = LoggerFactory.getLogger(WorkModeServiceImpl.class);
 
     private final WorkModeRepository workModeRepository;
     private final UserRepository userRepository;
 
     @Override
     @Transactional
-    public WorkMode createWorkMode(Long userId, WorkMode newMode) {
+    public WorkMode createWorkMode(@Nonnull Long userId, WorkMode newMode) {
         final User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("user not found for this id : " + userId));
         final WorkMode workMode = workModeRepository.findByNameMode(newMode.getNameMode());
@@ -40,7 +41,7 @@ public class WorkModelServiceImpl implements WorkModelService {
 
     @Override
     @Transactional
-    public WorkMode updateWorkMode(Long userId, Long modeId, WorkMode externalMode) throws ResourceNotFoundException {
+    public WorkMode updateWorkMode(@Nonnull Long userId, Long modeId, WorkMode externalMode) throws ResourceNotFoundException {
         userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("user not found for this id : " + userId));
         final String modeName = externalMode.getNameMode();
@@ -68,13 +69,13 @@ public class WorkModelServiceImpl implements WorkModelService {
     }
 
     @Override
-    public WorkMode findById(long modeId) throws ResourceNotFoundException {
+    public WorkMode findById(@Nonnull Long modeId) throws ResourceNotFoundException {
         return workModeRepository.findById(modeId)
                 .orElseThrow(() -> new ResourceNotFoundException("workMode not found for this id : " + modeId));
     }
 
     @Override
-    public WorkMode findByNameMode(String nameMode) throws ResourceNotFoundException {
+    public WorkMode findByNameMode(@Nonnull String nameMode) throws ResourceNotFoundException {
         final WorkMode workMode = workModeRepository.findByNameMode(nameMode);
         if (workMode == null) {
             LOG.error("workMode not found for this name : " + nameMode);
@@ -89,7 +90,7 @@ public class WorkModelServiceImpl implements WorkModelService {
     }
 
     @Override
-    public Set<WorkMode> findByUserId(Long userId) {
+    public Set<WorkMode> findByUserId(@Nonnull Long userId) {
         final Set<WorkMode> workModes = workModeRepository.findByUserId(userId);
         if (workModes.size() == 0) {
             LOG.error("workModes not found for user with id: " + userId);
@@ -100,7 +101,7 @@ public class WorkModelServiceImpl implements WorkModelService {
 
     @Override
     @Transactional
-    public void deleteWorkMode(Long userId, Long modeId) throws ResourceNotFoundException {
+    public void deleteWorkMode(@Nonnull Long userId, Long modeId) throws ResourceNotFoundException {
         userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("user not found for this id : " + userId));
         final WorkMode internalWorkMode = findById(modeId);

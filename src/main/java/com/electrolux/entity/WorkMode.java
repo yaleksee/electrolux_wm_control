@@ -58,7 +58,7 @@ public class WorkMode{
     private User user;
 
 //    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "workModes")
-    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "workModes", cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "workModes", cascade = CascadeType.ALL)
     @Fetch(value=FetchMode.SELECT)
     @JsonIgnore
     @ToString.Exclude

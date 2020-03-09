@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -34,7 +35,7 @@ public class WashingMachineServiceImpl implements WashingMachineService {
 
     @Override
     @Transactional
-    public Model createModel(long userId, Model newModel) {
+    public Model createModel(@Nonnull Long userId, Model newModel) {
         final User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("user not found for this id : " + userId));
         final Model model = model_repository.findByModelName(newModel.getModelName());
@@ -52,7 +53,7 @@ public class WashingMachineServiceImpl implements WashingMachineService {
 
     @Override
     @Transactional
-    public Model updateModel(long userId, long modelId, Model externalModel) throws ResourceNotFoundException {
+    public Model updateModel(@Nonnull Long userId, Long modelId, Model externalModel) throws ResourceNotFoundException {
         userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("user not found for this id : " + userId));
         final Model internalModel = findById(modelId);
@@ -67,6 +68,7 @@ public class WashingMachineServiceImpl implements WashingMachineService {
             internalMode.setVolume(externalModel.getVolume());
             internalMode.setHexCodeCollor(externalModel.getHexCodeCollor());
             internalMode.setIsDisplay(externalModel.getIsDisplay());
+            internalMode.setWorkModes(externalModel.getWorkModes());
             return model_repository.save(internalMode);
         }
         LOG.error("User with id : " + userId + " don't author of this mode");
@@ -74,13 +76,13 @@ public class WashingMachineServiceImpl implements WashingMachineService {
     }
 
     @Override
-    public Model findById(long modelId) throws ResourceNotFoundException {
+    public Model findById(@Nonnull Long modelId) throws ResourceNotFoundException {
         return model_repository.findById(modelId)
                 .orElseThrow(() -> new ResourceNotFoundException("Model not found for this id : " + modelId));
     }
 
     @Override
-    public Model findByNameModel(String modelName) throws ResourceNotFoundException {
+    public Model findByNameModel(@Nonnull String modelName) throws ResourceNotFoundException {
         final Model model = model_repository.findByModelName(modelName);
         if (model == null) {
             LOG.error("model not found for this name : " + modelName);
@@ -96,7 +98,7 @@ public class WashingMachineServiceImpl implements WashingMachineService {
 
     @Override
     @Transactional
-    public Set<Model> findByUserId(long userId) {
+    public Set<Model> findByUserId(@Nonnull Long userId) {
         userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("user not found for this id : " + userId));
         final Set<Model> models = model_repository.findByUserId(userId);
@@ -108,14 +110,14 @@ public class WashingMachineServiceImpl implements WashingMachineService {
     }
 
     @Override
-    public Set<WorkMode> getAllModesFromWM(long wmId) {
+    public Set<WorkMode> getAllModesFromWM(@Nonnull Long wmId) {
         Model model = findById(wmId);
         return model.getWorkModes();
     }
 
     @Override
     @Transactional
-    public Status putSomeModeIntoWM(long userId, long wmId, List<Long> arrModeId) {
+    public Status putSomeModeIntoWM(@Nonnull Long userId, Long wmId, List<Long> arrModeId) {
         final Model model = findById(wmId);
         userRepository.findById(userId);
         if (model.getUser().getId() != userId) {
@@ -141,7 +143,7 @@ public class WashingMachineServiceImpl implements WashingMachineService {
 
     @Override
     @Transactional
-    public Status putAllModeIntoWM(long userId, long wmId) {
+    public Status putAllModeIntoWM(@Nonnull Long userId, Long wmId) {
         final Model model = findById(wmId);
         userRepository.findById(userId);
         if (model.getUser().getId() != userId) {
@@ -159,7 +161,7 @@ public class WashingMachineServiceImpl implements WashingMachineService {
 
     @Override
     @Transactional
-    public Status deleteSomeModeIntoWM(long userId, long wmId, List<Long> arrModeId) {
+    public Status deleteSomeModeIntoWM(@Nonnull Long userId, Long wmId, List<Long> arrModeId) {
         final Model model = findById(wmId);
         userRepository.findById(userId);
         if (model.getUser().getId() != userId) {
@@ -183,7 +185,7 @@ public class WashingMachineServiceImpl implements WashingMachineService {
 
     @Override
     @Transactional
-    public Status deleteAllModeIntoWM(long userId, long wmId) {
+    public Status deleteAllModeIntoWM(@Nonnull Long userId, Long wmId) {
         final Model model = findById(wmId);
         userRepository.findById(userId);
         if (model.getUser().getId() != userId) {

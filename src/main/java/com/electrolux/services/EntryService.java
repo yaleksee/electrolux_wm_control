@@ -21,9 +21,9 @@ public interface EntryService {
 
     List<Entry> getAllEntries();
 
-    Entry findById(@Nonnull long logId);
+    Entry findById(@Nonnull Long logId);
 
-    Set<Entry> findByWMId(@Nonnull long wmId);
+    Set<Entry> findByWMId(@Nonnull Long wmId);
 
     /**
      * select all entries by time interval
@@ -47,6 +47,6 @@ public interface EntryService {
      * @param modeId - id workMode
      * @return {@link Status}
      */
-    Status addEntry(@Nonnull long wmId, long modeId);
+    Status addEntry(@Nonnull Long wmId, Long modeId);
 
 }

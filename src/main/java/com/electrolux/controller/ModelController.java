@@ -4,7 +4,7 @@ import com.electrolux.entity.Model;
 import com.electrolux.entity.WorkMode;
 import com.electrolux.exception.ResourceNotFoundException;
 import com.electrolux.services.WashingMachineService;
-import com.electrolux.services.WorkModelService;
+import com.electrolux.services.WorkModeService;
 import com.electrolux.utils.ListModeWrapper;
 import com.electrolux.utils.Status;
 import io.swagger.annotations.Api;
@@ -22,7 +22,7 @@ import java.util.Set;
 @Api(value = "REST provides function for work with model washing machine")
 @RequiredArgsConstructor
 public class ModelController {
-    private final WorkModelService modeService;
+    private final WorkModeService modeService;
     private final WashingMachineService washingMachineService;
 
     @GetMapping

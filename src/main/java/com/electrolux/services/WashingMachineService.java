@@ -30,7 +30,7 @@ public interface WashingMachineService {
      * @param newModel - {@link Model}
      * @return if user by userId is found - {@link Model}, else - ResourceNotFoundException.
      */
-    Model createModel(long userId, Model newModel);
+    Model createModel(Long userId, Model newModel);
 
     /**
      * Only the user who owns this machine can edit WM.
@@ -41,15 +41,15 @@ public interface WashingMachineService {
      * @param externalModel {@link Model}
      * @return if user and model are found - {@link Model}, else - ResourceNotFoundException.
      */
-    Model updateModel(@Nonnull long userId, long modelId, Model externalModel);
+    Model updateModel(@Nonnull Long userId, Long modelId, Model externalModel);
 
-    Model findById(@Nonnull long modelId);
+    Model findById(@Nonnull Long modelId);
 
     Model findByNameModel(@Nonnull String modelName);
 
     List<Model> getAllWM_Models();
 
-    Set<Model> findByUserId(@Nonnull long userId);
+    Set<Model> findByUserId(@Nonnull Long userId);
 
     /**
      * Get all exiting modes from WM by id
@@ -57,19 +57,19 @@ public interface WashingMachineService {
      * @param wmId - washing machine
      * @return if washing machine is found - {@link WorkMode}, else - ResourceNotFoundException.
      */
-    Set<WorkMode> getAllModesFromWM(@Nonnull long wmId);
+    Set<WorkMode> getAllModesFromWM(@Nonnull Long wmId);
 
 
     /**
      * User loads the current mode into the current model by mode id
-     * User does not have access to modes that do not belong to him
+     * User does not have access to modes that do not beLong to him
      *
      * @param userId    - id user
      * @param wmId      - id washing machine
      * @param arrModeId - collection id modes
      * @return {@link Status}
      */
-    Status putSomeModeIntoWM(@Nonnull long userId, long wmId, List<Long> arrModeId);
+    Status putSomeModeIntoWM(@Nonnull Long userId, Long wmId, List<Long> arrModeId);
 
 
     /**
@@ -79,7 +79,7 @@ public interface WashingMachineService {
      * @param wmId   - id washing machine
      * @return {@link Status}
      */
-    Status putAllModeIntoWM(@Nonnull long userId, long wmId);
+    Status putAllModeIntoWM(@Nonnull Long userId, Long wmId);
 
 
     /**
@@ -90,7 +90,7 @@ public interface WashingMachineService {
      * @param arrModeId - collection id modes
      * @return {@link Status}
      */
-    Status deleteSomeModeIntoWM(@Nonnull long userId, long wmId, List<Long> arrModeId);
+    Status deleteSomeModeIntoWM(@Nonnull Long userId, Long wmId, List<Long> arrModeId);
 
 
     /**
@@ -100,7 +100,7 @@ public interface WashingMachineService {
      * @param wmId   - id washing machine
      * @return {@link Status}
      */
-    Status deleteAllModeIntoWM(@Nonnull long userId, long wmId);
+    Status deleteAllModeIntoWM(@Nonnull Long userId, Long wmId);
 
 
     /**
